@@ -68,6 +68,7 @@ on post-fs-data
     mkdir /data/vendor_de 0770 system system
     mkdir /data/vendor_de/0 0770 system system
     mkdir /data/vendor_de/0/cryptoeng 0770 system system
+    setprop ro.separate.soft ${ro.boot.prjname}
 
 #service health-hal-2-1 /system/bin/android.hardware.health@2.1-service
 #    class hal charger
@@ -87,6 +88,7 @@ service hal_cryptoeng_oplus /system/bin/hw/vendor.oplus.hardware.cryptoeng@1.0-s
 
 on property:hwservicemanager.ready=true
     start hal_cryptoeng_oplus
+    setprop ro.separate.soft ${ro.boot.prjname}
 
 on property:ro.crypto.state=unsupported
     stop hal_cryptoeng_oplus
@@ -96,4 +98,4 @@ on property:ro.crypto.state=unencrypted
 
 on property:twrp.decrypt.done=true
     stop hal_cryptoeng_oplus
-
+    setprop ro.separate.soft ${ro.boot.prjname}
