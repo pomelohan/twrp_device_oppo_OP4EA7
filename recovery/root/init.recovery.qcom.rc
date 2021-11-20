@@ -25,9 +25,12 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+import /init.recovery.qcom_decrypt.rc
+
 on init
     write /sys/class/backlight/panel0-backlight/brightness 200
     setprop sys.usb.configfs 1
+    setprop prepdecrypt.loglevel 2
     #ifdef VENDO_EDIT
     #Shuangquan.du@PSW.AD.Recovery.0, 2019/08/22, Add for fastbood in recovery mode
     mkdir /config/usb_gadget/g1/functions/ffs.fastboot
@@ -60,4 +63,37 @@ on property:sys.usb.ffs.ready=1
     symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f1
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
 #endif /*OPLUS_FEATURE_OTAPACKAGE_UPDATER*/
+
+on post-fs-data
+    mkdir /data/vendor_de 0770 system system
+    mkdir /data/vendor_de/0 0770 system system
+    mkdir /data/vendor_de/0/cryptoeng 0770 system system
+
+#service health-hal-2-1 /system/bin/android.hardware.health@2.1-service
+#    class hal charger
+#    user root
+#    group root
+#    capabilities WAKE_ALARM
+#    file /dev/kmsg w
+
+#on boot
+#    start health-hal-2-1
+
+service hal_cryptoeng_oplus /system/bin/hw/vendor.oplus.hardware.cryptoeng@1.0-service
+    user root
+    group root input sdcard_rw sdcard_r
+    disabled
+    seclabel u:r:recovery:s0
+
+on property:hwservicemanager.ready=true
+    start hal_cryptoeng_oplus
+
+on property:ro.crypto.state=unsupported
+    stop hal_cryptoeng_oplus
+
+on property:ro.crypto.state=unencrypted
+    stop hal_cryptoeng_oplus
+
+on property:twrp.decrypt.done=true
+    stop hal_cryptoeng_oplus
 

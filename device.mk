@@ -5,3 +5,7 @@
 #
 
 LOCAL_PATH := device/oppo/OP4EA7
+
+PRODUCT_PACKAGES += \
+    qcom_decrypt \
+    qcom_decrypt_fbe
