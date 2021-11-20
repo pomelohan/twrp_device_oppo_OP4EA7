@@ -130,3 +130,6 @@ TW_INCLUDE_REPACKTOOLS := true
 TW_INCLUDE_LOGICAL := my_product my_engineering my_company my_carrier my_region my_heytap my_stock my_preload my_manifest my_bigball
 TW_DEVICE_VERSION := GarfieldHan
 TW_HAS_EDL_MODE := true
+# Debug
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
